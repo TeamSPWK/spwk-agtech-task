@@ -28,6 +28,8 @@ emergence_date = "1988-01-01"
 # max_duration = 365
 '''
 
+pcse_data_dir = os.path.join(os.path.dirname(__file__), "data")
+
 def agroactions(actions: np.array, engine):
     weather_act_list = ['IRRAD', 'TMIN', 'TMAX', 'VAP', 'RAIN', 'E0', 'ES0', 'ET0', 'WIND']
     assert len(actions[:9]) == len(weather_act_list)
@@ -162,7 +164,7 @@ class PCSE_Env(gym.Env):
         """.format(cname=self.crop_name, vname=self.variety_name, 
                    start=self.campaign_start_date, startdate=self.emergence_date, 
                    end = self.end_date, maxdur=365)
-        pcse_data_dir = os.path.join(os.path.dirname(__file__), "data")
+        
         self.crop = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.crop"))
         self.soil = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.soil"))
         self.site = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.site"))
