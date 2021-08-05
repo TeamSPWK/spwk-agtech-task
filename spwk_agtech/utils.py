@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from pcse.db import NASAPowerWeatherDataProvider
-from const import *
+from .const import *
 
 
 OUTPUT_VARNAME = {k: v['mean'] for k,v in OBSERVATIONS.items()}

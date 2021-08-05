@@ -11,8 +11,8 @@ from pcse.base import ParameterProvider
 
 import gym
 from gym.spaces import Box
-from utils import *
-from const import *
+from .utils import *
+from .const import *
 
 import logging
 
