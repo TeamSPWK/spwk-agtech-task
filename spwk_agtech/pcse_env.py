@@ -1,7 +1,7 @@
+import os
 import datetime
 import yaml
 import copy
-
 import numpy as np
 
 import pcse
@@ -162,9 +162,10 @@ class PCSE_Env(gym.Env):
         """.format(cname=self.crop_name, vname=self.variety_name, 
                    start=self.campaign_start_date, startdate=self.emergence_date, 
                    end = self.end_date, maxdur=365)
-        self.crop = CABOFileReader("./data/wofost_npk.crop")
-        self.soil = CABOFileReader("./data/wofost_npk.soil")
-        self.site = CABOFileReader("./data/wofost_npk.site")
+        pcse_data_dir = os.path.join(os.path.dirname(__file__), "data")
+        self.crop = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.crop"))
+        self.soil = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.soil"))
+        self.site = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.site"))
         self.params = ParameterProvider(soildata=self.soil, cropdata=self.crop, sitedata=self.site)
         
         
@@ -172,7 +173,7 @@ class PCSE_Env(gym.Env):
         
         self.module_init()
         self.agro = yaml.safe_load(self.agro_yaml)
-        self.engine = Engine(self.params, self.weather, self.agro, config="./data/Wofost71_NPK.conf")
+        self.engine = Engine(self.params, self.weather, self.agro, config=os.path.join(pcse_data_dir, "Wofost71_NPK.conf"))
         self.current_date = self.engine.day
         
         
