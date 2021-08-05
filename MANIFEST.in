@@ -1,0 +1,6 @@
+# Model configuration files & input files
+
+include spwk_agtech/data/wofost_npk.crop
+include spwk_agtech/data/wofost_npk.site
+include spwk_agtech/data/wofost_npk.soil
+include spwk_agtech/data/Wofost71_NPK.conf

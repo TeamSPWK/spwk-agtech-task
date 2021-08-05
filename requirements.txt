@@ -1,0 +1,14 @@
+sqlalchemy
+pyyaml
+matplotlib
+numpy
+pandas
+pytz
+setuptools
+sphinx
+sphinx_rtd_theme
+xlrd
+xlwt
+requests
+gym
+pcse

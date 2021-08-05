@@ -1,7 +1,7 @@
+import os
 import datetime
 import yaml
 import copy
-
 import numpy as np
 
 import pcse
@@ -11,8 +11,8 @@ from pcse.base import ParameterProvider
 
 import gym
 from gym.spaces import Box
-from utils import *
-from const import *
+from .utils import *
+from .const import *
 
 import logging
 
@@ -27,6 +27,8 @@ campaign_start_date = '1988-01-01'
 emergence_date = "1988-01-01"
 # max_duration = 365
 '''
+
+pcse_data_dir = os.path.join(os.path.dirname(__file__), "data")
 
 def agroactions(actions: np.array, engine):
     weather_act_list = ['IRRAD', 'TMIN', 'TMAX', 'VAP', 'RAIN', 'E0', 'ES0', 'ET0', 'WIND']
@@ -85,6 +87,7 @@ def rewardf(prev_state, state, action, done):
 
 
 class PCSE_Env(gym.Env):
+   
     metadata = {'render.modes': ['human']}
 
     def __init__(self, lat = 35, long = 128, crop_name = 'wheat', variety_name = 'winter-wheat', campaign_start_date = '1988-01-01', emergence_date = "1988-01-01"):
@@ -161,9 +164,10 @@ class PCSE_Env(gym.Env):
         """.format(cname=self.crop_name, vname=self.variety_name, 
                    start=self.campaign_start_date, startdate=self.emergence_date, 
                    end = self.end_date, maxdur=365)
-        self.crop = CABOFileReader("/home/hychoi/anaconda3/envs/py3_pcse/lib/python3.6/site-packages/pcse/tests/test_data/wofost_npk.crop")
-        self.soil = CABOFileReader("/home/hychoi/anaconda3/envs/py3_pcse/lib/python3.6/site-packages/pcse/tests/test_data/wofost_npk.soil")
-        self.site = CABOFileReader("/home/hychoi/anaconda3/envs/py3_pcse/lib/python3.6/site-packages/pcse/tests/test_data/wofost_npk.site")
+        
+        self.crop = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.crop"))
+        self.soil = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.soil"))
+        self.site = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.site"))
         self.params = ParameterProvider(soildata=self.soil, cropdata=self.crop, sitedata=self.site)
         
         
@@ -171,7 +175,7 @@ class PCSE_Env(gym.Env):
         
         self.module_init()
         self.agro = yaml.safe_load(self.agro_yaml)
-        self.engine = Engine(self.params, self.weather, self.agro, config="Wofost71_NPK.conf")
+        self.engine = Engine(self.params, self.weather, self.agro, config=os.path.join(pcse_data_dir, "Wofost71_NPK.conf"))
         self.current_date = self.engine.day
         
         
