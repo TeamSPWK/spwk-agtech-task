@@ -85,6 +85,7 @@ def rewardf(prev_state, state, action, done):
 
 
 class PCSE_Env(gym.Env):
+   
     metadata = {'render.modes': ['human']}
 
     def __init__(self, lat = 35, long = 128, crop_name = 'wheat', variety_name = 'winter-wheat', campaign_start_date = '1988-01-01', emergence_date = "1988-01-01"):
@@ -161,9 +162,9 @@ class PCSE_Env(gym.Env):
         """.format(cname=self.crop_name, vname=self.variety_name, 
                    start=self.campaign_start_date, startdate=self.emergence_date, 
                    end = self.end_date, maxdur=365)
-        self.crop = CABOFileReader("/home/hychoi/anaconda3/envs/py3_pcse/lib/python3.6/site-packages/pcse/tests/test_data/wofost_npk.crop")
-        self.soil = CABOFileReader("/home/hychoi/anaconda3/envs/py3_pcse/lib/python3.6/site-packages/pcse/tests/test_data/wofost_npk.soil")
-        self.site = CABOFileReader("/home/hychoi/anaconda3/envs/py3_pcse/lib/python3.6/site-packages/pcse/tests/test_data/wofost_npk.site")
+        self.crop = CABOFileReader("./data/wofost_npk.crop")
+        self.soil = CABOFileReader("./data/wofost_npk.soil")
+        self.site = CABOFileReader("./data/wofost_npk.site")
         self.params = ParameterProvider(soildata=self.soil, cropdata=self.crop, sitedata=self.site)
         
         
@@ -171,7 +172,7 @@ class PCSE_Env(gym.Env):
         
         self.module_init()
         self.agro = yaml.safe_load(self.agro_yaml)
-        self.engine = Engine(self.params, self.weather, self.agro, config="Wofost71_NPK.conf")
+        self.engine = Engine(self.params, self.weather, self.agro, config="./data/Wofost71_NPK.conf")
         self.current_date = self.engine.day
         
         

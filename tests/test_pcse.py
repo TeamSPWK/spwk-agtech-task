@@ -1,0 +1,3 @@
+import pcse
+
+pcse.test()
