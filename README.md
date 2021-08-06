@@ -62,4 +62,5 @@ while True:
 ```
 
 <h2 align="center">Documentation</h2>
-🚧Work In Progress
+
+[Task Details](https://github.com/TeamSPWK/spwk-agtech-task/blob/develop/documents/Task_Details.md)
