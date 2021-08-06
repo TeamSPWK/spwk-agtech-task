@@ -81,6 +81,42 @@ def NASAPowerWeatherDataFetcher(latitude, longitude, force_update = False, ETmod
         raise ValueError("WDP error")
     return weather
 
+def send_actions2engine(actions: np.array, engine):
+    weather_act_list = ['IRRAD', 'TMIN', 'TMAX', 'VAP', 'RAIN', 'E0', 'ES0', 'ET0', 'WIND']
+    assert len(actions[:9]) == len(weather_act_list)
+    
+    date = engine.day + datetime.timedelta(days=1)
+    date_wdc = engine.weatherdataprovider(date)
+    irrigate = engine.agromanager.timed_event_dispatchers[0][0]
+    apply_npk = engine.agromanager.timed_event_dispatchers[0][1]
+    
+    weather_act = dict()
+    for ix, varname in enumerate(weather_act_list):
+        if np.isnan(actions[ix]):
+            continue
+        date_wdc.__setattr__(varname, actions[ix])
+        weather_act[varname] = actions[ix]
+    
+    if np.isfinite(actions[9]):
+        irrigate_act = {'amount': actions[9], 'efficiency': 0.7}
+        irrigate_sig = {date : irrigate_act}
+        irrigate.events_table.append(irrigate_sig)
+        irrigate.days_with_events.update(irrigate_sig.keys())
+    else:
+        logging.warning(f"Irrigation action is {actions[9]}. You should check actor.")
+        irrigate_act = {'amount': actions[9], 'efficiency': 0.7}
+        
+    if np.isfinite(actions[10:].all()):
+        npk_act = {'N_amount':actions[10], 'P_amount':actions[11], 'K_amount':actions[12], 'N_recovery':0.7, 'P_recovery':0.7, 'K_recovery':0.7}
+        npk_sig = {date : npk_act}
+        apply_npk.events_table.append(npk_sig)
+        apply_npk.days_with_events.update(npk_sig.keys())   
+    else:
+        logging.warning(f"NPK applying action(s) is N - {actions[10]}, P - {actions[11]}, K - {actions[12]}. You should check actor.")
+        npk_act = {'N_amount':actions[10], 'P_amount':actions[11], 'K_amount':actions[12], 'N_recovery':0.7, 'P_recovery':0.7, 'K_recovery':0.7}
+
+    return weather_act, irrigate_act, npk_act
+
 def pcse_runner(env, policy, test = True):
     '''
     Return actions and rewards (observations can be obtained directly from env.engine) after running environment
@@ -105,7 +141,7 @@ def pcse_runner(env, policy, test = True):
         rewards.append(reward)
     return actions, rewards
 
-def pcse_env_obs_show(env, policies:list, policy_name:list, test:list):
+def plot_pcse_env_obs(env, policies:list, policy_name:list, test:list):
     '''
     Visualize observations from running environment using policies (for comparison)
     
@@ -146,7 +182,7 @@ def pcse_env_obs_show(env, policies:list, policy_name:list, test:list):
     plt.subplots_adjust(wspace=0.2, hspace=0.3)
     plt.plot()
     
-def pcse_env_act_show(env, policies:list, policy_name:list, test:list):
+def plot_pcse_env_act(env, policies:list, policy_name:list, test:list):
     '''
     Visualize actions from running environment using policies (for comparison)
     
@@ -186,7 +222,7 @@ def pcse_env_act_show(env, policies:list, policy_name:list, test:list):
     plt.subplots_adjust(wspace=0.2, hspace=0.3)
     plt.plot()
     
-def pcse_env_plot(env, policies:list, policy_name:list, test=None):
+def plot_pcse_env(env, policies:list, policy_name:list, test=None):
     '''
     Visualize observations and actions from running environment using policies (for comparison)
     
@@ -200,10 +236,10 @@ def pcse_env_plot(env, policies:list, policy_name:list, test=None):
     else:
         test = [True] * len(policies)
         
-    pcse_env_obs_show(env, policies, policy_name, test)
-    pcse_env_act_show(env, policies, policy_name, test)
+    plot_pcse_env_obs(env, policies, policy_name, test)
+    plot_pcse_env_act(env, policies, policy_name, test)
 
-def pcse_engine_plot(output:dict, output_varname:dict={None}):
+def plot_pcse_engine(output:dict, output_varname:dict={None}):
     '''
     Directly visualize outputs from engine
     
