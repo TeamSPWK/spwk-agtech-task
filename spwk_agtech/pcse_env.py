@@ -30,43 +30,7 @@ emergence_date = "1988-01-01"
 
 pcse_data_dir = os.path.join(os.path.dirname(__file__), "data")
 
-def agroactions(actions: np.array, engine):
-    weather_act_list = ['IRRAD', 'TMIN', 'TMAX', 'VAP', 'RAIN', 'E0', 'ES0', 'ET0', 'WIND']
-    assert len(actions[:9]) == len(weather_act_list)
-    
-    date = engine.day + datetime.timedelta(days=1)
-    date_wdc = engine.weatherdataprovider(date)
-    irrigate = engine.agromanager.timed_event_dispatchers[0][0]
-    apply_npk = engine.agromanager.timed_event_dispatchers[0][1]
-    
-    weather_act = dict()
-    for ix, varname in enumerate(weather_act_list):
-        if np.isnan(actions[ix]):
-            continue
-        date_wdc.__setattr__(varname, actions[ix])
-        weather_act[varname] = actions[ix]
-    
-    if np.isfinite(actions[9]):
-        irrigate_act = {'amount': actions[9], 'efficiency': 0.7}
-        irrigate_sig = {date : irrigate_act}
-        irrigate.events_table.append(irrigate_sig)
-        irrigate.days_with_events.update(irrigate_sig.keys())
-    else:
-        logging.warning(f"Irrigation action is {actions[9]}. You should check actor.")
-        irrigate_act = {'amount': actions[9], 'efficiency': 0.7}
-        
-    if np.isfinite(actions[10:].all()):
-        npk_act = {'N_amount':actions[10], 'P_amount':actions[11], 'K_amount':actions[12], 'N_recovery':0.7, 'P_recovery':0.7, 'K_recovery':0.7}
-        npk_sig = {date : npk_act}
-        apply_npk.events_table.append(npk_sig)
-        apply_npk.days_with_events.update(npk_sig.keys())   
-    else:
-        logging.warning(f"NPK applying action(s) is N - {actions[10]}, P - {actions[11]}, K - {actions[12]}. You should check actor.")
-        npk_act = {'N_amount':actions[10], 'P_amount':actions[11], 'K_amount':actions[12], 'N_recovery':0.7, 'P_recovery':0.7, 'K_recovery':0.7}
-
-    return weather_act, irrigate_act, npk_act
-
-def profit(state, action, done):
+def get_profit(state, action, done):
     
     if done:
         price = state[3] * 279.34 / 1000 # wheat price is 279.34 USD / 1000 kg
@@ -78,12 +42,12 @@ def profit(state, action, done):
     cost = irrigation_cost + npk_cost
     return price - cost
 
-def rewardf(prev_state, state, action, done):
+def get_reward(prev_state, state, action, done):
     
     init_factor = 0
     progress_factor = 0
     
-    return profit(state, action, done)
+    return get_profit(state, action, done)
 
 
 class PCSE_Env(gym.Env):
@@ -114,7 +78,6 @@ class PCSE_Env(gym.Env):
         self.obs_unit = [v['unit'] for v in OBSERVATIONS.values()]
     
         self.ref_weather = NASAPowerWeatherDataFetcher(self.lat, self.long)
-        self.module_init()
         self.profit = 0
         self.need_reset = True
         self.done = False
@@ -136,7 +99,7 @@ class PCSE_Env(gym.Env):
         return norm_obs_act
     
     
-    def module_init(self):
+    def _module_init(self):
         self.weather = copy.deepcopy(self.ref_weather)
         self.agro_yaml = """
         - {start}:
@@ -171,9 +134,9 @@ class PCSE_Env(gym.Env):
         self.params = ParameterProvider(soildata=self.soil, cropdata=self.crop, sitedata=self.site)
         
         
-    def engine_init(self):
+    def _engine_init(self):
         
-        self.module_init()
+        self._module_init()
         self.agro = yaml.safe_load(self.agro_yaml)
         self.engine = Engine(self.params, self.weather, self.agro, config=os.path.join(pcse_data_dir, "Wofost71_NPK.conf"))
         self.current_date = self.engine.day
@@ -189,7 +152,7 @@ class PCSE_Env(gym.Env):
         self.profit = 0
         self.need_reset = False
         self.done = False
-        self.engine_init()
+        self._engine_init()
         obs = self.Obs_shaping(self.engine.get_output()[-1], self.obs_name)
         self.obs = obs
         return obs
@@ -201,7 +164,7 @@ class PCSE_Env(gym.Env):
             return None
             
         action = self.denorm(action, 'act')
-        agroactions(action, self.engine)
+        send_actions2engine(action, self.engine)
         self.engine.run(days = 1)
         
         if self.engine.day - self.current_date == datetime.timedelta(0):
@@ -213,8 +176,8 @@ class PCSE_Env(gym.Env):
         if self.denorm(next_obs, 'obs')[0] >= 2:
             self.done = True
         
-        self.profit += profit(self.denorm(next_obs, 'obs'), action, self.done)
-        reward = rewardf(self.denorm(self.obs, 'obs'), self.denorm(next_obs, 'obs'), action, self.done)
+        self.profit += get_profit(self.denorm(next_obs, 'obs'), action, self.done)
+        reward = get_reward(self.denorm(self.obs, 'obs'), self.denorm(next_obs, 'obs'), action, self.done)
         info = {}
         
         self.obs = next_obs
@@ -224,7 +187,7 @@ class PCSE_Env(gym.Env):
     def render(self, mode='human'):
         print(f"profit: {self.profit} USD/ha")
         try:
-            pcse_engine_plot(self.engine.get_output())
+            plot_pcse_engine(self.engine.get_output())
         except AttributeError:
             loggin.error("Needs reset. You should first initialize environment.")
     
