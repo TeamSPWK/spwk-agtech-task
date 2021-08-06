@@ -86,7 +86,7 @@ class PCSE_Env(gym.Env):
     def denorm(self, obs_act, _type):
         if _type == "act":
             denorm_obs_act = (obs_act * (self.action_max - self.action_min) + self.action_min + self.action_max)/2
-            denorm_obs_act = np.clip(denorm_obs_act, self.aciton_min, self.action_max)
+            denorm_obs_act = np.clip(denorm_obs_act, self.action_min, self.action_max)
         elif _type == "obs":
             denorm_obs_act = (obs_act * (self.obs_max - self.obs_min) + self.obs_min + self.obs_max)/2
         return denorm_obs_act
