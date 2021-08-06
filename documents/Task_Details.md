@@ -154,6 +154,7 @@ If we fail to reproduce your result described on answer document, and if there a
 
 Examples of `env.render()`
 
+`profit: -36628.68041134567 USD/ha`
 ![download](https://user-images.githubusercontent.com/87963916/128451737-0848aa67-8e61-4209-886f-f29860af3b5e.png)
 
 
