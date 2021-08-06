@@ -3,7 +3,7 @@
 
 <p align="center"><a href="https://github.com/TeamSPWK/spwk-agtech-task/releases"><img src="https://img.shields.io/badge/release-v0.1.0-blue" alt="release state" /></a>
 <a href="#description"><img src="https://img.shields.io/badge/env-PCSE--v0-blueviolet" alt="env" /></a>
-<a href="https://github.com/TeamSPWK/spwk-agtech-task/LICENSE"><img src="https://img.shields.io/badge/license-GPL--v3-green" alt="env" /></a>
+<a href="https://github.com/TeamSPWK/spwk-agtech-task/blob/develop/LICENSE"><img src="https://img.shields.io/badge/license-GPL--v3-green" alt="env" /></a>
 
 <p align="center">
   <a href="#description">Description</a> •
