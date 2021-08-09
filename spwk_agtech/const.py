@@ -85,8 +85,8 @@ ACTIONS = {
         'unit':'Celsius'},
     'VAP': {
     # Daily mean vapour pressure
-        'min': 0.06,
-        'max': 199.3,
+        'min': 0.06 + 1e-5,
+        'max': 199.3 - 1e-4,
         'unit': 'hPa'},
     'RAIN': {
     # Daily total rainfall
