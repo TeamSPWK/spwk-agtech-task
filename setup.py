@@ -8,7 +8,7 @@ with open("requirements.txt") as fr:
 
 setup(
     name = "spwk_agtech",
-    version = "0.1.0",
+    version = "0.2-beta",
     author= "hayoung choi",
     author_email = "hychoi@spacewalk.tech",
     description = "Tests for spacewalk Agtech engineer applicants",
