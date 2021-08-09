@@ -1,7 +1,5 @@
 <h1 align="center">Task Details</h1>
 
-🚧 Work in Progress
-
 <p align="center">
   <a href="#problem-descriptions">Problem Descriptions</a> •
   <a href="#environment">Environment</a> •
@@ -27,19 +25,19 @@
   - 1 episode will be terminated after 196 steps
 
  
-🔎 _you can check details of observations and actions in [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)_
+🔎 _you can check details of `observations` and `actions` in [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)_
 
-🔎 _you can check details of reward and done in [pcse_env.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/develop/spwk_agtech/pcse_env.py)_
+🔎 _you can check details of `reward` and `done` in [pcse_env.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/develop/spwk_agtech/pcse_env.py)_
 
 <h3>Goal</h3>
 
 - Maximize `return` (sum of reward)
+- High stability of training
+- Fast convergence
 - (optional) Make generialized agent
   - There are additional test PCSE setting that we do not offer to applicants
   - Good performance on those setting is not mandatory, but recommended
   - Extra points will given for performance on those test setting
-- (optional) High stability of training
-- (optional) Fast convergence
 
 <h2 align="center">Environment</h2>
 
@@ -50,7 +48,7 @@
     - It has large range of observations and actions
     - Depends on your method, these information may not sufficient to solve the problem
     - You can create a wrapper environment to generate additional information
-    - If you are familiar with some frameworks(like gym, etc.), you can use given environment as a library and create wrapper environment inherits framework you want to use
+    - If you are familiar with some libraries(like gym, etc.), you can use given environment as a library and create wrapper environment inherits framework you want to use
     - If you create a wrapper environment, you have to submit that as well
 
 <h3>Methods of PCSE-v0</h3>
@@ -107,7 +105,7 @@ If you think you will not be able to do it within the deadline, please notify us
 <h3>Submission List</h3>
 
 - Answer document
-    - Answer document should describe in detail how you solved the problem.
+    - Answer document should describe in detail how and why you solved the problem like that.
     - There is no restrictions on the format of the document, but the document should be sufficiently expressive of how you solved the problem.
     - Please add some images and performance properties of your final results on the document.
     - Training graph have to be attached to the document.
