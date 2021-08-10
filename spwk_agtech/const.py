@@ -7,7 +7,7 @@ OBSERVATIONS = {
         'mean':'Development stage'},
     'LAI': {
     # 'Leaf Area Index' including stem and pod area / 
-        'min': 0.007330,
+        'min': 0,
         'max': 10,
         'unit':'ha/ha',
         'mean':'LAI'},
