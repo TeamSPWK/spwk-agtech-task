@@ -99,7 +99,7 @@ ACTIONS = {
         'max': 2.5,
         'unit':'cm/day'},
     'ES0': {
-    # Penman potential evaporation from a moist bare soil surfac
+    # Penman potential evaporation from a moist bare soil surface
         'min': 0,
         'max': 2.5,
         'unit':'cm/day'},
