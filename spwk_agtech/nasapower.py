@@ -223,7 +223,7 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
                    }
         msg = "Starting retrieval from NASA Power"
         self.logger.debug(msg)
-        req = requests.get(server, params=payload, timeout=TIMEOUT)
+        req = requests.get(server, params=payload, timeout=self.TIMEOUT)
 
         if req.status_code != self.HTTP_OK:
             msg = ("Failed retrieving POWER data, server returned HTTP " +
