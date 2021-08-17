@@ -63,10 +63,14 @@ while True:
 ---
 🔎 _If you get `TIMEOUT` error or any errors when getting weather data from NASA POWER server (`gym.make("PCSE-v0")`), Please follow the steps below._
 
+1. Execute module `make_weather_cache`
+
 ```console
-python make_weather_cache.py
-python -c "from spwk_agtech import make_weather_cache; make_weather_cache"
+python -m spwk_agtech.make_weather_cache
 ```
+
+2. Try re-running the environment again.
+3. If it still does not work, please contact us. 
 
 <h2 align="center">Documentation</h2>
 
