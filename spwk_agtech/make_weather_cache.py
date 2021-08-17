@@ -20,9 +20,8 @@ def _get_cache_filename(latitude, longitude):
         
 def _loadndump(cache_fname):
     
-    file_load = os.path.join(os.getcwd(), 'data')
+    file_load = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
     file_dump = METEO_CACHE_DIR
-    # file_dump = os.path.join("~/.pcse/meteo_cache", fname)
     os.makedirs(file_dump, exist_ok=True)
     
     try:
