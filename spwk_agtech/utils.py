@@ -8,6 +8,8 @@ import matplotlib.dates as mdates
 from .nasapower import NASAPowerWeatherDataProvider
 from .const import *
 
+from pcse.util import reference_ET
+
 
 OUTPUT_VARNAME = {k: v['mean'] for k,v in OBSERVATIONS.items()}
 OBS_UNIT = [v['unit'] for v in OBSERVATIONS.values()]
@@ -82,8 +84,9 @@ def NASAPowerWeatherDataFetcher(latitude, longitude, force_update = False, ETmod
     return weather
 
 def send_actions2engine(actions: np.array, engine):
-    weather_act_list = ['IRRAD', 'TMIN', 'TMAX', 'VAP', 'RAIN', 'E0', 'ES0', 'ET0', 'WIND']
-    assert len(actions[:9]) == len(weather_act_list)
+    weather_act_list = ['IRRAD', 'TMIN', 'TMAX', 'VAP', 'RAIN', 'WIND']
+    assert len(actions) == len(weather_act_list) + 4
+    
     
     date = engine.day + datetime.timedelta(days=1)
     date_wdc = engine.weatherdataprovider(date)
@@ -96,24 +99,33 @@ def send_actions2engine(actions: np.array, engine):
             continue
         date_wdc.__setattr__(varname, actions[ix])
         weather_act[varname] = actions[ix]
+    # TEMP = (TMIN + TMAX)/2 
+    date_wdc.__steattr__('TEMP', action[1] + action[2])
+    E0, ES0, ET0 = reference_ET(date, date_wdc.LAT, date_wdc.ELEV, date_wdc.TMIN, date_wdc.TMAX, date_wdc.IRRAD,
+                                date_wdc.VAP, date_wdc.WIND, engine.weatherdataprovider.angstA, engine.weatherdataprovider.angstB, "PM")
+    date_wdc.__steattr__('E0', E0)
+    date_wdc.__steattr__('ES0', ES0)
+    date_wdc.__steattr__('ET0', ET0)
     
-    if np.isfinite(actions[9]):
-        irrigate_act = {'amount': actions[9], 'efficiency': 0.7}
+    irr_act_num = len(weather_act_list)
+    irrigate_act = {'amount': actions[irr_act_num], 'efficiency': 0.7}
+    if np.isfinite(actions[irr_act_num]):
         irrigate_sig = {date : irrigate_act}
         irrigate.events_table.append(irrigate_sig)
         irrigate.days_with_events.update(irrigate_sig.keys())
     else:
-        logging.warning(f"Irrigation action is {actions[9]}. You should check actor.")
-        irrigate_act = {'amount': actions[9], 'efficiency': 0.7}
-        
-    if np.isfinite(actions[10:].all()):
-        npk_act = {'N_amount':actions[10], 'P_amount':actions[11], 'K_amount':actions[12], 'N_recovery':0.7, 'P_recovery':0.7, 'K_recovery':0.7}
+        logging.warning(f"Irrigation action is {actions[irr_act_num]}. You should check actor.")
+    
+    n_act_num = irr_act_num+1
+    p_act_num = n_act_num+1
+    k_act_num = p_act_num+1
+    npk_act = {'N_amount':actions[n_act_num], 'P_amount':actions[p_act_num], 'K_amount':actions[k_act_num], 'N_recovery':0.7, 'P_recovery':0.7, 'K_recovery':0.7}
+    if np.isfinite(actions[n_act_num:].all()):
         npk_sig = {date : npk_act}
         apply_npk.events_table.append(npk_sig)
         apply_npk.days_with_events.update(npk_sig.keys())   
     else:
-        logging.warning(f"NPK applying action(s) is N - {actions[10]}, P - {actions[11]}, K - {actions[12]}. You should check actor.")
-        npk_act = {'N_amount':actions[10], 'P_amount':actions[11], 'K_amount':actions[12], 'N_recovery':0.7, 'P_recovery':0.7, 'K_recovery':0.7}
+        logging.warning(f"NPK applying action(s) is N - {actions[n_act_num]}, P - {actions[p_act_num]}, K - {actions[k_act_num]}. You should check actor.")
 
     return weather_act, irrigate_act, npk_act
 
