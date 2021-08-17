@@ -1,7 +1,7 @@
 <h1 align="center">Spacewalk Agtech Engineer Task</h1>
 <p align="center">Task for spacewalk agtech engineer applicants</p>
 
-<p align="center"><a href="https://github.com/TeamSPWK/spwk-agtech-task/releases"><img src="https://img.shields.io/badge/release-v0.2.1-blue" alt="release state" /></a>
+<p align="center"><a href="https://github.com/TeamSPWK/spwk-agtech-task/releases"><img src="https://img.shields.io/badge/release-v0.2.2-blue" alt="release state" /></a>
 <a href="#description"><img src="https://img.shields.io/badge/env-PCSE--v0-blueviolet" alt="env" /></a>
 <a href="https://github.com/TeamSPWK/spwk-agtech-task/blob/develop/LICENSE"><img src="https://img.shields.io/badge/license-GPL--v3-green" alt="env" /></a>
 
@@ -40,7 +40,7 @@ pip install git+https://github.com/TeamSPWK/spwk-agtech-task.git
 
 You can use the environment like any other gym environment :
 
-```console
+```python
 # runner
 import spwk_agtech
 import gym
@@ -60,6 +60,17 @@ while True:
         break
 
 ```
+---
+🔎 _If you get `TIMEOUT` error or any errors when getting weather data from NASA POWER server (`gym.make("PCSE-v0")`), Please follow the steps below._
+
+1. Execute module `make_weather_cache`
+
+```console
+python -m spwk_agtech.make_weather_cache
+```
+
+2. Try re-running the environment again.
+3. If it still does not work, please contact us. 
 
 <h2 align="center">Documentation</h2>
 
