@@ -22,7 +22,7 @@
 - Reward 
   - It is calculated profit from yield and cost  
 - Done
-  - 1 episode will be terminated after 196 steps
+  - 1 episode will be terminated when `DVS` reachs to 2 or the simulation ends.
 
  
 🔎 _you can check details of `observations` and `actions` in [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)_

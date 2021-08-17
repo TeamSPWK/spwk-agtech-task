@@ -97,6 +97,7 @@ class PCSE_Env(gym.Env):
             norm_obs_act = (2*obs_act - (self.action_max + self.action_min))/(self.action_max  - self.action_min)
         elif _type == 'obs':
             norm_obs_act = (2*obs_act - (self.obs_max + self.obs_min))/(self.obs_max  - self.obs_min)
+            norm_obs_act = np.clip(norm_obs_act, -1, 1)
         return norm_obs_act
     
     

@@ -7,7 +7,7 @@ OBSERVATIONS = {
         'mean':'Development stage'},
     'LAI': {
     # 'Leaf Area Index' including stem and pod area / 
-        'min': 0.007330,
+        'min': 0,
         'max': 10,
         'unit':'ha/ha',
         'mean':'LAI'},
@@ -99,7 +99,7 @@ ACTIONS = {
         'max': 2.5,
         'unit':'cm/day'},
     'ES0': {
-    # Penman potential evaporation from a moist bare soil surfac
+    # Penman potential evaporation from a moist bare soil surface
         'min': 0,
         'max': 2.5,
         'unit':'cm/day'},
