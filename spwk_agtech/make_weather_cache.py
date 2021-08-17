@@ -34,16 +34,16 @@ def _loadndump(cache_fname):
         logger.error(msg)
         return False
     
-#     try:
-    with open(os.path.join(file_dump, cache_fname), "wb") as fp:
-        dmp = (store, elevation, longitude, latitude, description, ETModel)
-        pickle.dump(dmp, fp, pickle.HIGHEST_PROTOCOL)
-    msg = f"Save to {os.path.join(file_dump, cache_fname)}"
-    logger.debug(msg)
-#     except:
-#         msg = f"Save fail"
-#         logger.error(msg)
-#         return False
+    try:
+        with open(os.path.join(file_dump, cache_fname), "wb") as fp:
+            dmp = (store, elevation, longitude, latitude, description, ETModel)
+            pickle.dump(dmp, fp, pickle.HIGHEST_PROTOCOL)
+        msg = f"Save to {os.path.join(file_dump, cache_fname)}"
+        logger.debug(msg)
+    except:
+        msg = f"Save fail"
+        logger.error(msg)
+        return False
     
     return True 
         
