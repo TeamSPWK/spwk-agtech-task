@@ -69,6 +69,7 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
                        "T2M_MAX", "T2MDEW", "WS2M", "PRECTOTCORR"]
     # other constants
     HTTP_OK = 200
+    TIMEOUT = 30
     angstA = 0.29
     angstB = 0.49
 
@@ -222,7 +223,7 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
                    }
         msg = "Starting retrieval from NASA Power"
         self.logger.debug(msg)
-        req = requests.get(server, params=payload)
+        req = requests.get(server, params=payload, timeout=TIMEOUT)
 
         if req.status_code != self.HTTP_OK:
             msg = ("Failed retrieving POWER data, server returned HTTP " +
