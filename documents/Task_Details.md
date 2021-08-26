@@ -17,7 +17,7 @@ Welcome to the documentation of `PCSE-v0`, the gym environment for cultivating c
 - Observation
   - Plant information (9 items) 
   - Soil information (2 items)  
-- Action  
+- Action (`continuous`) 
   - Weather (9 items)  
   - Irrigation (1 items)  
   - N/P/K application (3 items)  
