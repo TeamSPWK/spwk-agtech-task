@@ -10,6 +10,8 @@
 
 <h2 align="center">Problem Descriptions</h2>
 
+Welcome to the documentation of `PCSE-v0`, the gym environment for cultivating crops.
+
 <h3>MDP design</h3>
 
 - Observation
@@ -31,7 +33,7 @@
 
 <h3>Goal</h3>
 
-- Maximize `return` (sum of reward)
+- Maximize `return` (sum of reward)  
 - High stability of training
 - Fast convergence
 - (optional) Make generialized agent
@@ -41,13 +43,12 @@
 
 <h2 align="center">Environment</h2>
 
+It's a multi-steps environment with `continuous actions`
+
 <h3>Allowed</h3>
 
 - You can wrap the given environment with your custom environment
-    - Given environment provides minimal information to solve the problem
-    - It has large range of observations and actions
-    - Depends on your method, these information may not sufficient to solve the problem
-    - You can create a wrapper environment to generate additional information
+    - Depends on your method, current MDP design may not sufficient to solve the problem. Given environment provides minimal information to solve the problem and It has large range of observations and actions. You can create a wrapper environment to generate additional information
     - If you are familiar with some libraries(like gym, etc.), you can use given environment as a library and create wrapper environment inherits framework you want to use
     - If you create a wrapper environment, you have to submit that as well
 
@@ -65,10 +66,12 @@
 
 - `env._module_init(self)`
   - Initialize crop, soil, and site modules for PCSE engine
+  - This function is about module initialization of PCSE engine, so you don't need to worry about it.
 
 - `env._engine_init(self)`
   - Initialize PCSE engine
   - Call `_module_init`
+  - This function is about module initialization of PCSE engine, so you don't need to worry about it.
 
 - `env.reset(self)`
   - Reset environment
@@ -79,7 +82,7 @@
 - `env.step(self, action)`
   - Apply actions
       - args
-          - `action (ndarray)` : 13 actions. Check [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)
+          - `action (ndarray)` : 13 continuous actions. Check [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)
       - returns
           - `next_obs (ndarray)` : It is observed after given actions.
           - `reward` : reward from current actions and next observations.
