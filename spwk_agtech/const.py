@@ -6,7 +6,7 @@ OBSERVATIONS = {
         'unit':'stage',
         'mean':'Development stage'},
     'LAI': {
-    # 'Leaf Area Index' including stem and pod area / 
+    # 'Leaf Area Index' including stem and pod area /
         'min': 0,
         'max': 10,
         'unit':'ha/ha',
@@ -74,7 +74,7 @@ ACTIONS = {
         'max': 4e7,
         'unit':'J/m2/day'},
     'TMIN': {
-    # Daily minimum temperature 
+    # Daily minimum temperature
         'min': -50,
         'max': 60,
         'unit':'Celsius'},
@@ -132,5 +132,5 @@ ACTIONS = {
     # Amount of K fertilizer in kg/ha applied on this day.
         'min': 0,
         'max': 100,
-        'unit':'kg/ha'}    
+        'unit':'kg/ha'}
 }
