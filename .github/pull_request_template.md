@@ -8,11 +8,6 @@
 
 <!--- Provide additional context, like why this PR is needed (what was wrong with previous code) --->
 
-## 🏷️ Tickets
-
-<!--- List JIRA tickets or Github issues associated to this PR here --->
-*
-
 ## ⚠️ Side-effects
 
 <!--- Any side-effects or shortcomings reviewers should be aware of ? --->
