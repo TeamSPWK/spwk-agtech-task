@@ -10,17 +10,20 @@
 
 <h2 align="center">Problem Descriptions</h2>
 
+Welcome to the documentation of `PCSE-v0`, the gym environment for cultivating crops.
+
 <h3>MDP design</h3>
 
 - Observation
   - Plant information (9 items) 
   - Soil information (2 items)  
-- Action  
+- Action (`continuous`) 
   - Weather (9 items)  
   - Irrigation (1 items)  
   - N/P/K application (3 items)  
 - Reward 
-  - It is calculated profit from yield and cost  
+  - It is calculated profit from yield and cost
+  - In now, we only use "profit". You can modify the reward funtion to help training agent.  
 - Done
   - 1 episode will be terminated when `DVS` reachs to 2 or the simulation ends.
 
@@ -31,7 +34,7 @@
 
 <h3>Goal</h3>
 
-- Maximize `return` (sum of reward)
+- Maximize `profit` (In now, sum of reward)  
 - High stability of training
 - Fast convergence
 - (optional) Make generialized agent
@@ -41,15 +44,16 @@
 
 <h2 align="center">Environment</h2>
 
+It's a multi-steps environment with `continuous actions`
+
 <h3>Allowed</h3>
 
 - You can wrap the given environment with your custom environment
-    - Given environment provides minimal information to solve the problem
-    - It has large range of observations and actions
-    - Depends on your method, these information may not sufficient to solve the problem
-    - You can create a wrapper environment to generate additional information
+    - Depending on your method, current MDP design may not be sufficient to solve the problem. Given environment provides minimal information to solve the problem and it has large range of observations and actions. You can create a wrapper environment to generate additional information
     - If you are familiar with some libraries(like gym, etc.), you can use given environment as a library and create wrapper environment inherits framework you want to use
     - If you create a wrapper environment, you have to submit that as well
+- You can modify the reward funtion to help training agent (It needs to be submintted as well)
+
 
 <h3>Methods of PCSE-v0</h3>
 
@@ -65,10 +69,12 @@
 
 - `env._module_init(self)`
   - Initialize crop, soil, and site modules for PCSE engine
+  - This function is about module initialization of PCSE engine, so you don't need to worry about it.
 
 - `env._engine_init(self)`
   - Initialize PCSE engine
   - Call `_module_init`
+  - This function is about module initialization of PCSE engine, so you don't need to worry about it.
 
 - `env.reset(self)`
   - Reset environment
@@ -79,7 +85,7 @@
 - `env.step(self, action)`
   - Apply actions
       - args
-          - `action (ndarray)` : 13 actions. Check [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)
+          - `action (ndarray)` : 13 different 1-d continuous actions. Check [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)
       - returns
           - `next_obs (ndarray)` : It is observed after given actions.
           - `reward` : reward from current actions and next observations.
@@ -88,7 +94,7 @@
 
 - `env.render(self, mode='human')`
   - Print current profit.
-  - Render current state. (11 observations from beginning to the present)
+  - Render current state. (11 different 1-d observations from beginning to the present)
 
 <h2 align="center">Submission Guidelines</h2>
 
@@ -107,7 +113,7 @@ If you think you will not be able to do it within the deadline, please notify us
 - Answer document
     - Answer document should describe in detail how and why you solved the problem like that.
     - There is no restrictions on the format of the document, but the document should be sufficiently expressive of how you solved the problem.
-    - Please add some images and performance properties of your final results on the document.
+    - Please add some images and performance properties of your final results on the document (the graph from `env.render()`).
     - Training graph have to be attached to the document.
     - We will find not only your theoretical approach, but also your skills to produce proper training information, and to drive the learning with proper tuning.
 

@@ -11,4 +11,4 @@ xlrd
 xlwt
 requests
 gym
-pcse
+pcse==5.4.2
