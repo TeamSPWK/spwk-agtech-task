@@ -82,7 +82,7 @@ It's a multi-steps environment with `continuous actions`
 - `env.step(self, action)`
   - Apply actions
       - args
-          - `action (ndarray)` : 13 continuous actions. Check [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)
+          - `action (ndarray)` : 13 different 1-d continuous actions. Check [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)
       - returns
           - `next_obs (ndarray)` : It is observed after given actions.
           - `reward` : reward from current actions and next observations.
@@ -91,7 +91,7 @@ It's a multi-steps environment with `continuous actions`
 
 - `env.render(self, mode='human')`
   - Print current profit.
-  - Render current state. (11 observations from beginning to the present)
+  - Render current state. (11 different 1-d observations from beginning to the present)
 
 <h2 align="center">Submission Guidelines</h2>
 
