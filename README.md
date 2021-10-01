@@ -1,7 +1,7 @@
 <h1 align="center">Spacewalk Agtech Engineer Task</h1>
 <p align="center">Task for spacewalk agtech engineer applicants</p>
 
-<p align="center"><a href="https://github.com/TeamSPWK/spwk-agtech-task/releases"><img src="https://img.shields.io/badge/release-v0.2.2-blue" alt="release state" /></a>
+<p align="center"><a href="https://github.com/TeamSPWK/spwk-agtech-task/releases"><img src="https://img.shields.io/badge/release-v0.2.3-blue" alt="release state" /></a>
 <a href="#description"><img src="https://img.shields.io/badge/env-PCSE--v0-blueviolet" alt="env" /></a>
 <a href="https://github.com/TeamSPWK/spwk-agtech-task/blob/develop/LICENSE"><img src="https://img.shields.io/badge/license-GPL--v3-green" alt="env" /></a>
 
@@ -16,9 +16,9 @@
 
 This package contains tasks and instructions for spacewalk Agtech engineer applicants.
 
-[PCSE](https://pcse.readthedocs.io/en/stable/) (Python Crop Simulation Environment) is a Python package for building crop simulation models, in particular the crop models developed in Wageningen (Netherlands). PCSE is no exception and its source code is open and licensed under the European Union Public License. 
+[PCSE](https://pcse.readthedocs.io/en/stable/) (Python Crop Simulation Environment) is a Python package for building crop simulation models, in particular the crop models developed in Wageningen (Netherlands). PCSE is no exception and its source code is open and licensed under the European Union Public License.
 
-In this task, we need to solve a simple agricultural reinforcement learning problem created by modified PCSE. 
+In this task, we need to solve a simple agricultural reinforcement learning problem created by modified PCSE.
 
 Goal: `MAXIMIZE RETURN!!`
 
@@ -28,7 +28,7 @@ List of environments :
 
 <h2 align="center">Install</h2>
 
-Install `spwk_agtech` package with : 
+Install `spwk_agtech` package with :
 
 (It is recommended to install the package in virtual environment due to dependencies)
 
@@ -70,7 +70,7 @@ python -m spwk_agtech.make_weather_cache
 ```
 
 2. Try re-running the environment again.
-3. If it still does not work, please contact us. 
+3. If it still does not work, please contact us.
 
 <h2 align="center">Documentation</h2>
 
