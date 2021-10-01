@@ -112,7 +112,7 @@ class PcseEnv(gym.Env):
         Check get_profit function.
 
     Starting State:
-        In now, It is fixed.
+        Now, it is fixed.
 
     Episode Termination:
         If 'DVS' > 2.
