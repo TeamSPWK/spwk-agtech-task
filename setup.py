@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding='utf-8') as fh:
     long_description = fh.read()
 
 with open("requirements.txt") as fr:
@@ -8,7 +8,7 @@ with open("requirements.txt") as fr:
 
 setup(
     name = "spwk_agtech",
-    version = "0.2.2",
+    version = "0.2.3",
     author= "hayoung choi",
     author_email = "hychoi@spacewalk.tech",
     description = "Tests for spacewalk Agtech engineer applicants",
