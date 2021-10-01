@@ -22,7 +22,8 @@ Welcome to the documentation of `PCSE-v0`, the gym environment for cultivating c
   - Irrigation (1 items)  
   - N/P/K application (3 items)  
 - Reward 
-  - It is calculated profit from yield and cost  
+  - It is calculated profit from yield and cost
+  - In now, we only use "profit". You can modify the reward funtion to help training agent.  
 - Done
   - 1 episode will be terminated when `DVS` reachs to 2 or the simulation ends.
 
@@ -33,7 +34,7 @@ Welcome to the documentation of `PCSE-v0`, the gym environment for cultivating c
 
 <h3>Goal</h3>
 
-- Maximize `return` (sum of reward)  
+- Maximize `profit` (In now, sum of reward)  
 - High stability of training
 - Fast convergence
 - (optional) Make generialized agent
@@ -51,6 +52,8 @@ It's a multi-steps environment with `continuous actions`
     - Depending on your method, current MDP design may not be sufficient to solve the problem. Given environment provides minimal information to solve the problem and it has large range of observations and actions. You can create a wrapper environment to generate additional information
     - If you are familiar with some libraries(like gym, etc.), you can use given environment as a library and create wrapper environment inherits framework you want to use
     - If you create a wrapper environment, you have to submit that as well
+- You can modify the reward funtion to help training agent (It needs to be submintted as well)
+
 
 <h3>Methods of PCSE-v0</h3>
 
