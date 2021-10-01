@@ -48,7 +48,7 @@ It's a multi-steps environment with `continuous actions`
 <h3>Allowed</h3>
 
 - You can wrap the given environment with your custom environment
-    - Depends on your method, current MDP design may not sufficient to solve the problem. Given environment provides minimal information to solve the problem and It has large range of observations and actions. You can create a wrapper environment to generate additional information
+    - Depending on your method, current MDP design may not be sufficient to solve the problem. Given environment provides minimal information to solve the problem and it has large range of observations and actions. You can create a wrapper environment to generate additional information
     - If you are familiar with some libraries(like gym, etc.), you can use given environment as a library and create wrapper environment inherits framework you want to use
     - If you create a wrapper environment, you have to submit that as well
 
