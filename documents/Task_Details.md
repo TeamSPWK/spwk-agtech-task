@@ -113,7 +113,7 @@ If you think you will not be able to do it within the deadline, please notify us
 - Answer document
     - Answer document should describe in detail how and why you solved the problem like that.
     - There is no restrictions on the format of the document, but the document should be sufficiently expressive of how you solved the problem.
-    - Please add some images and performance properties of your final results on the document.
+    - Please add some images and performance properties of your final results on the document (the graph from `env.render()`).
     - Training graph have to be attached to the document.
     - We will find not only your theoretical approach, but also your skills to produce proper training information, and to drive the learning with proper tuning.
 
