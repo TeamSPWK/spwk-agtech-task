@@ -236,7 +236,7 @@ class PcseEnv(gym.Env):
                                                  'Wofost71_NPK.conf'))
         self.current_date = self.engine.day
 
-    def extract_obs(self, raw_obs, obs_name):
+    def get_obs(self, raw_obs, obs_name):
         obs = np.array([raw_obs[x] for x in obs_name if x in raw_obs.keys()],
                        dtype=np.float32)
         obs = self.norm(obs, 'obs')
@@ -247,7 +247,7 @@ class PcseEnv(gym.Env):
         self.need_reset = False
         self.done = False
         self._engine_init()
-        obs = self.extract_obs(self.engine.get_output()[-1], self.obs_name)
+        obs = self.get_obs(self.engine.get_output()[-1], self.obs_name)
         self.obs = obs
         return obs
 
@@ -265,7 +265,7 @@ class PcseEnv(gym.Env):
         else:
             self.current_date = self.engine.day
 
-        next_obs = self.extract_obs(self.engine.get_output()[-1],
+        next_obs = self.get_obs(self.engine.get_output()[-1],
                                     self.obs_name)
         if self.denorm(next_obs, 'obs')[0] >= 2:
             self.done = True
