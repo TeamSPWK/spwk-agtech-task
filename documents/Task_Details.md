@@ -15,26 +15,26 @@ Welcome to the documentation of `PCSE-v0`, the gym environment for cultivating c
 <h3>MDP design</h3>
 
 - Observation
-  - Plant information (9 items) 
-  - Soil information (2 items)  
-- Action (`continuous`) 
-  - Weather (9 items)  
-  - Irrigation (1 items)  
-  - N/P/K application (3 items)  
-- Reward 
+  - Plant information (9 items)
+  - Soil information (2 items)
+- Action (`continuous`)
+  - Weather (9 items)
+  - Irrigation (1 items)
+  - N/P/K application (3 items)
+- Reward
   - It is calculated profit from yield and cost
-  - In now, we only use "profit". You can modify the reward funtion to help training agent.  
+  - In now, we only use "profit". You can modify the reward funtion to help training agent.
 - Done
   - 1 episode will be terminated when `DVS` reachs to 2 or the simulation ends.
 
- 
+
 🔎 _you can check details of `observations` and `actions` in [const.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/master/spwk_agtech/const.py)_
 
 🔎 _you can check details of `reward` and `done` in [pcse_env.py](https://github.com/TeamSPWK/spwk-agtech-task/blob/develop/spwk_agtech/pcse_env.py)_
 
 <h3>Goal</h3>
 
-- Maximize `profit` (In now, sum of reward)  
+- Maximize `profit` (In now, sum of reward)
 - High stability of training
 - Fast convergence
 - (optional) Make generialized agent
@@ -104,9 +104,9 @@ It's a multi-steps environment with `continuous actions`
     - Deadline notification due : Until the day after the test notification mail is sent
     - Please notify us by e-mail (<hychoi@spacewalk.tech>).
 
-You don't have to rush to submit, so give yourself plenty of time.  
-Once you fix the deadline, please stick to it.  
-If you think you will not be able to do it within the deadline, please notify us by e-mail in advance.  
+You don't have to rush to submit, so give yourself plenty of time.
+Once you fix the deadline, please stick to it.
+If you think you will not be able to do it within the deadline, please notify us by e-mail in advance.
 
 <h3>Submission List</h3>
 
@@ -125,10 +125,10 @@ If you think you will not be able to do it within the deadline, please notify us
 - Wrapper environment code
     - If you created wrapper environment code, you should include it in your submission.
 
-Reproducibility with minimum effort is the most important for your submission.  
-You don't have to divide your code into agent part and environment part.  
-Please attach all things that required for us to reproduce your result.  
-If we fail to reproduce your result described on answer document, and if there are no valid cause for the non-reproducibility, your score may be deducted.  
+Reproducibility with minimum effort is the most important for your submission.
+You don't have to divide your code into agent part and environment part.
+Please attach all things that required for us to reproduce your result.
+If we fail to reproduce your result described on answer document, and if there are no valid cause for the non-reproducibility, your score may be deducted.
 
 <h3>How to Submit</h3>
 
@@ -138,21 +138,39 @@ If we fail to reproduce your result described on answer document, and if there a
 
 - Problem solving process : 20%
     - Problem solving process have to be scientific.
-    - The document should follow your problem solving process.
 - Scientific hypothesis : 15%
     - It includes the expected characteristic of the problem, and why you choose the method.
     - The hypothesis have to be reasonable, and scientific.
-    - Your hypothesis should be described on the document.
 - Phenomenon analysis : 15%
     - Once you validate your hypothesis with experiment, you can get the result.
     - From result, observe phenomenon and analyze it.
-    - This analysis have to be described on the document.
 - Document & code quality : 15%
+    - The document should follow your problem solving process.
+    - Your hypothesis should be described on the document.
+    - The phenomenon analysis have to be described on the document.
     - Document and code should be written in a communicative manner.
 - Result performance : 35%
     - Spacewalk is a performance-oriented company, and we will score result performance as well as problem solving procedure.
     - We will retrain your model, and check if the result is same as you described on the document.
     - The criteria of result performance are "final performance", "sample efficiency" and "training stability".
+      - The final performance is scored by re-evaluation using your checkpoint. We will use your highest score.
+      - The sample efficiency is scored based on the average of episodes taken to produce results up to baseline scores (`1402`) during `10 tries`. The maximum episode length tested is `100k`. If the final performance does not reach the baseline score, You will get 0 for this criteria. If there are cases that do not reach the baseline, they are excluded from the average.
+      - During scoring the sample efficiency, We will also score the training stability of your algorithms. If the final performance does not reach the baseline score, You will get 0 for this criteria. The default score is 10 points, and one point will be deducted for each case of not reaching the baseline score.
+
+
+      | Score | Final performance (50 %) | Sample efficiency (30 %) |
+      | -----------: | -----------: | -----------: |
+      | 10     | > 3000    | <= 250    |
+      | 9      | >= 2800   | <= 500    |
+      | 8      | >= 2600   | <= 1K     |
+      | 7      | >= 2300   | <= 2K     |
+      | 6      | >= 2000   | <= 3K     |
+      | 5      | >= 1700   | <= 6K     |
+      | 4      | >= 1402   | <= 12K    |
+      | 3      | >= 700    | <= 25K    |
+      | 2      | >= 0      | <= 50K    |
+      | 1      | >= -20000 | <= 100K   |
+      | 0      | < -20000  | > 100K    |
 
 <h2 align="center">Appendix</h2>
 
