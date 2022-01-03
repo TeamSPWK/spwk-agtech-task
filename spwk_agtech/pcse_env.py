@@ -279,7 +279,7 @@ class PcseEnv(gym.Env):
         self.obs = next_obs
         return next_obs, reward, self.done, info
 
-    def render(self):
+    def render(self, mode="human"):
         print(f'profit: {self.profit} USD/ha')
         try:
             fig = plot_pcse_engine(self.engine.get_output())
