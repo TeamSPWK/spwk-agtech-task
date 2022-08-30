@@ -24,8 +24,10 @@ def _get_cache_filename(latitude, longitude):
     """
 
     cache_filename = "%s_LAT%05i_LON%05i.cache" % (
-        "NASAPowerWeatherDataProvider", int(latitude * 10), int(
-            longitude * 10))
+        "NASAPowerWeatherDataProvider",
+        int(latitude * 10),
+        int(longitude * 10),
+    )
 
     return cache_filename
 
@@ -40,15 +42,15 @@ def _loadndump(cache_fname):
         bool: True if load and save successfully else False
     """
 
-    file_load = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                             "data")
+    file_load = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
     file_dump = METEO_CACHE_DIR
     os.makedirs(file_dump, exist_ok=True)
 
     try:
         with open(os.path.join(file_load, cache_fname), "rb") as fp:
-            (store, elevation, longitude, latitude, description,
-             ETModel) = pickle.load(fp)
+            (store, elevation, longitude, latitude, description, ETModel) = pickle.load(
+                fp
+            )
         msg = f"Load from {os.path.join(file_load, cache_fname)}"
         logger.debug(msg)
     except Exception as e:
@@ -80,8 +82,7 @@ def _write_cache_file():
         _loadndump(cache_filename)
 
     except (IOError, EnvironmentError) as e:
-        msg = "Failed to write cache to file '%s' due to: %s" % (
-            cache_filename, e)
+        msg = "Failed to write cache to file '%s' due to: %s" % (cache_filename, e)
         logger.warning(msg)
 
 

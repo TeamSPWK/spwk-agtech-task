@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2004-2018 Alterra, Wageningen-UR
 # Allard de Wit (allard.dewit@wur.nl), July 2018
-import os
 import datetime as dt
+import os
 
 import numpy as np
 import pandas as pd
 import requests
-
-from pcse.base import WeatherDataProvider, WeatherDataContainer
-from pcse.util import ea_from_tdew, reference_ET, check_angstromAB
+from pcse.base import WeatherDataContainer, WeatherDataProvider
 from pcse.exceptions import PCSEError
 from pcse.settings import settings
+from pcse.util import check_angstromAB, ea_from_tdew, reference_ET
 
 # Define some lambdas to take care of unit conversions.
 MJ_to_J = lambda x: x * 1e6
-mm_to_cm = lambda x: x / 10.
-tdew_to_hpa = lambda x: ea_from_tdew(x) * 10.
+mm_to_cm = lambda x: x / 10.0
+tdew_to_hpa = lambda x: ea_from_tdew(x) * 10.0
 to_date = lambda d: d.date()
 
 
@@ -64,11 +63,28 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
     in PCSE simulations may occur due to small differences in day length.
 
     """
+
     # Variable names in POWER data
-    power_variables_old = ["ALLSKY_TOA_SW_DWN", "ALLSKY_SFC_SW_DWN", "T2M", "T2M_MIN",
-                       "T2M_MAX", "T2MDEW", "WS2M", "PRECTOT"]
-    power_variables = ["TOA_SW_DWN", "ALLSKY_SFC_SW_DWN", "T2M", "T2M_MIN",
-                       "T2M_MAX", "T2MDEW", "WS2M", "PRECTOTCORR"]
+    power_variables_old = [
+        "ALLSKY_TOA_SW_DWN",
+        "ALLSKY_SFC_SW_DWN",
+        "T2M",
+        "T2M_MIN",
+        "T2M_MAX",
+        "T2MDEW",
+        "WS2M",
+        "PRECTOT",
+    ]
+    power_variables = [
+        "TOA_SW_DWN",
+        "ALLSKY_SFC_SW_DWN",
+        "T2M",
+        "T2M_MIN",
+        "T2M_MAX",
+        "T2MDEW",
+        "WS2M",
+        "PRECTOTCORR",
+    ]
     # other constants
     HTTP_OK = 200
     angstA = 0.29
@@ -121,9 +137,11 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
                 msg = "Cache file older then 90 days, reloading data from NASA Power."
                 self.logger.debug(msg)
                 self._get_and_process_NASAPower(self.latitude, self.longitude)
-            except Exception as e:
-                msg = ("Reloading data from NASA failed, reverting to (outdated) " +
-                       "cache file")
+            except Exception:
+                msg = (
+                    "Reloading data from NASA failed, reverting to (outdated) "
+                    + "cache file"
+                )
                 self.logger.debug(msg)
                 status = self._load_cache_file()
                 if status is not True:
@@ -135,8 +153,10 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         """
         powerdata = self._query_NASAPower_server(latitude, longitude)
         if not powerdata:
-            msg = "Failure retrieving POWER data from server. This can be a connection problem with " \
-                  "the NASA POWER server, retry again later."
+            msg = (
+                "Failure retrieving POWER data from server. This can be a connection problem with "
+                "the NASA POWER server, retry again later."
+            )
             raise RuntimeError(msg)
 
         # Store the informational header then parse variables
@@ -177,13 +197,15 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         # check if sufficient data is available to make a reasonable estimate:
         # As a rule of thumb we want to have at least 200 days available
         if len(df_power) < 200:
-            msg = ("Less then 200 days of data available. Reverting to " +
-                   "default Angstrom A/B coefficients (%f, %f)")
+            msg = (
+                "Less then 200 days of data available. Reverting to "
+                + "default Angstrom A/B coefficients (%f, %f)"
+            )
             self.logger.warn(msg % (self.angstA, self.angstB))
             return self.angstA, self.angstB
 
         # calculate relative radiation (swv_dwn/toa_dwn) and percentiles
-        relative_radiation = df_power.ALLSKY_SFC_SW_DWN/df_power.TOA_SW_DWN
+        relative_radiation = df_power.ALLSKY_SFC_SW_DWN / df_power.TOA_SW_DWN
         ix = relative_radiation.notnull()
         angstrom_a = float(np.percentile(relative_radiation[ix].values, 5))
         angstrom_ab = float(np.percentile(relative_radiation[ix].values, 98))
@@ -192,8 +214,10 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         try:
             check_angstromAB(angstrom_a, angstrom_b)
         except PCSEError as e:
-            msg = ("Angstrom A/B values (%f, %f) outside valid range: %s. " +
-                   "Reverting to default values.")
+            msg = (
+                "Angstrom A/B values (%f, %f) outside valid range: %s. "
+                + "Reverting to default values."
+            )
             msg = msg % (angstrom_a, angstrom_b, e)
             self.logger.warn(msg)
             return self.angstA, self.angstB
@@ -207,28 +231,31 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         """Query the NASA Power server for data on given latitude/longitude
         """
 
-        start_date = dt.date(1983,7,1)
+        start_date = dt.date(1983, 7, 1)
         end_date = dt.date.today()
 
         # build URL for retrieving data, using new NASA POWER api
         server = "https://power.larc.nasa.gov/api/temporal/daily/point"
-        payload = {"request": "execute",
-                   "parameters": ",".join(self.power_variables),
-                   "latitude": latitude,
-                   "longitude": longitude,
-                   "start": start_date.strftime("%Y%m%d"),
-                   "end": end_date.strftime("%Y%m%d"),
-                   "community": "AG",
-                   "format": "JSON",
-                   "user": "anonymous"
-                   }
+        payload = {
+            "request": "execute",
+            "parameters": ",".join(self.power_variables),
+            "latitude": latitude,
+            "longitude": longitude,
+            "start": start_date.strftime("%Y%m%d"),
+            "end": end_date.strftime("%Y%m%d"),
+            "community": "AG",
+            "format": "JSON",
+            "user": "anonymous",
+        }
         msg = "Starting retrieval from NASA Power"
         self.logger.debug(msg)
         req = requests.get(server, params=payload)
 
         if req.status_code != self.HTTP_OK:
-            msg = ("Failed retrieving POWER data, server returned HTTP " +
-                   "code: %i on following URL %s") % (req.status_code, req.url)
+            msg = (
+                "Failed retrieving POWER data, server returned HTTP "
+                + "code: %i on following URL %s"
+            ) % (req.status_code, req.url)
             raise PCSEError(msg)
 
         msg = "Successfully retrieved data from NASA Power"
@@ -255,8 +282,11 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         NASAPowerWeatherDataProvider_LAT00525_LON-1247.cache
         """
 
-        fname = "%s_LAT%05i_LON%05i.cache" % (self.__class__.__name__,
-                                              int(latitude*10), int(longitude*10))
+        fname = "%s_LAT%05i_LON%05i.cache" % (
+            self.__class__.__name__,
+            int(latitude * 10),
+            int(longitude * 10),
+        )
         cache_filename = os.path.join(settings.METEO_CACHE_DIR, fname)
         return cache_filename
 
@@ -291,16 +321,29 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         for rec in recs:
             # Reference evapotranspiration in mm/day
             try:
-                E0, ES0, ET0 = reference_ET(rec["DAY"], rec["LAT"], rec["ELEV"], rec["TMIN"], rec["TMAX"], rec["IRRAD"],
-                                            rec["VAP"], rec["WIND"], self.angstA, self.angstB, self.ETmodel)
+                E0, ES0, ET0 = reference_ET(
+                    rec["DAY"],
+                    rec["LAT"],
+                    rec["ELEV"],
+                    rec["TMIN"],
+                    rec["TMAX"],
+                    rec["IRRAD"],
+                    rec["VAP"],
+                    rec["WIND"],
+                    self.angstA,
+                    self.angstB,
+                    self.ETmodel,
+                )
             except ValueError as e:
-                msg = (("Failed to calculate reference ET values on %s. " % rec["DAY"]) +
-                       ("With input values:\n %s.\n" % str(rec)) +
-                       ("Due to error: %s" % e))
+                msg = (
+                    ("Failed to calculate reference ET values on %s. " % rec["DAY"])
+                    + ("With input values:\n %s.\n" % str(rec))
+                    + ("Due to error: %s" % e)
+                )
                 raise PCSEError(msg)
 
             # update record with ET values value convert to cm/day
-            rec.update({"E0": E0/10., "ES0": ES0/10., "ET0": ET0/10.})
+            rec.update({"E0": E0 / 10.0, "ES0": ES0 / 10.0, "ET0": ET0 / 10.0})
 
             # Build weather data container from dict 't'
             wdc = WeatherDataContainer(**rec)
@@ -334,16 +377,20 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
     def _POWER_to_PCSE(self, df_power):
 
         # Convert POWER data to a dataframe with PCSE compatible inputs
-        df_pcse = pd.DataFrame({"TMAX": df_power.T2M_MAX,
-                                "TMIN": df_power.T2M_MIN,
-                                "TEMP": df_power.T2M,
-                                "IRRAD": df_power.ALLSKY_SFC_SW_DWN.apply(MJ_to_J),
-                                "RAIN": df_power.PRECTOTCORR.apply(mm_to_cm),
-                                "WIND": df_power.WS2M,
-                                "VAP": df_power.T2MDEW.apply(tdew_to_hpa),
-                                "DAY": df_power.DAY.apply(to_date),
-                                "LAT": self.latitude,
-                                "LON": self.longitude,
-                                "ELEV": self.elevation})
+        df_pcse = pd.DataFrame(
+            {
+                "TMAX": df_power.T2M_MAX,
+                "TMIN": df_power.T2M_MIN,
+                "TEMP": df_power.T2M,
+                "IRRAD": df_power.ALLSKY_SFC_SW_DWN.apply(MJ_to_J),
+                "RAIN": df_power.PRECTOTCORR.apply(mm_to_cm),
+                "WIND": df_power.WS2M,
+                "VAP": df_power.T2MDEW.apply(tdew_to_hpa),
+                "DAY": df_power.DAY.apply(to_date),
+                "LAT": self.latitude,
+                "LON": self.longitude,
+                "ELEV": self.elevation,
+            }
+        )
 
         return df_pcse
