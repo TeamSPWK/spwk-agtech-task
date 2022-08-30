@@ -242,7 +242,7 @@ class PcseEnv(gym.Env):
         obs = self.norm(obs, 'obs')
         return obs
 
-    def reset(self):
+    def reset(self, seed=None):
         self.profit = 0
         self.need_reset = False
         self.done = False

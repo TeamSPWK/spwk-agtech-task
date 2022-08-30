@@ -52,8 +52,8 @@ obs = env.reset()
 step = 0
 while True:
     step += 1
-    action = env.action_space.sample()
-    next_obs, rew, done, _  = env.step(action)
+    act = env.action_space.sample()
+    next_obs, rew, done, _  = env.step(act)
     rews += rew
     obs = next_obs
     if done:
@@ -61,16 +61,6 @@ while True:
 
 ```
 ---
-🔎 _If you get `TIMEOUT` error or any errors when getting weather data from NASA POWER server (`gym.make("PCSE-v0")`), Please follow the steps below._
-
-1. Execute module `make_weather_cache`
-
-```console
-python -m spwk_agtech.make_weather_cache
-```
-
-2. Try re-running the environment again.
-3. If it still does not work, please contact us.
 
 <h2 align="center">Documentation</h2>
 

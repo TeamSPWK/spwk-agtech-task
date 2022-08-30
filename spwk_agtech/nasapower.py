@@ -43,7 +43,7 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
     WOFOST in the past.
 
     For more information on the NASA POWER database see the documentation
-    at: https://power.larc.nasa.gov/docs/services/
+    at: http://power.larc.nasa.gov/common/AgroclimatologyMethodology/Agro_Methodology_Content.html
 
     The `NASAPowerWeatherDataProvider` retrieves the weather from the
     th NASA POWER API and does the necessary conversions to be compatible
@@ -65,18 +65,19 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
 
     """
     # Variable names in POWER data
+    power_variables_old = ["ALLSKY_TOA_SW_DWN", "ALLSKY_SFC_SW_DWN", "T2M", "T2M_MIN",
+                       "T2M_MAX", "T2MDEW", "WS2M", "PRECTOT"]
     power_variables = ["TOA_SW_DWN", "ALLSKY_SFC_SW_DWN", "T2M", "T2M_MIN",
                        "T2M_MAX", "T2MDEW", "WS2M", "PRECTOTCORR"]
     # other constants
     HTTP_OK = 200
-    TIMEOUT = 30
     angstA = 0.29
     angstB = 0.49
 
     def __init__(self, latitude, longitude, force_update=False, ETmodel="PM"):
-        
+
         WeatherDataProvider.__init__(self)
-        
+
         if latitude < -90 or latitude > 90:
             msg = "Latitude should be between -90 and 90 degrees."
             raise ValueError(msg)
@@ -157,7 +158,7 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         self._dump(cache_filename)
 
     def _estimate_AngstAB(self, df_power):
-        """Determine Angstrom A/B parameters from Top-of-Atmosphere (TOA_SW_DWN) and
+        """Determine Angstrom A/B parameters from Top-of-Atmosphere (ALLSKY_TOA_SW_DWN) and
         top-of-Canopy (ALLSKY_SFC_SW_DWN) radiation values.
 
         :param df_power: dataframe with POWER data
@@ -206,10 +207,10 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         """Query the NASA Power server for data on given latitude/longitude
         """
 
-        start_date = dt.date(1987,1,1)
-        end_date = dt.date(1989,1,1)
+        start_date = dt.date(1983,7,1)
+        end_date = dt.date.today()
 
-        # build URL for retrieving data
+        # build URL for retrieving data, using new NASA POWER api
         server = "https://power.larc.nasa.gov/api/temporal/daily/point"
         payload = {"request": "execute",
                    "parameters": ",".join(self.power_variables),
@@ -223,7 +224,7 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
                    }
         msg = "Starting retrieval from NASA Power"
         self.logger.debug(msg)
-        req = requests.get(server, params=payload, timeout=self.TIMEOUT)
+        req = requests.get(server, params=payload)
 
         if req.status_code != self.HTTP_OK:
             msg = ("Failed retrieving POWER data, server returned HTTP " +
@@ -233,7 +234,6 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         msg = "Successfully retrieved data from NASA Power"
         self.logger.debug(msg)
         return req.json()
-        # return json.load(open("nasapower.json"))
 
     def _find_cache_file(self, latitude, longitude):
         """Try to find a cache file for given latitude/longitude.
@@ -314,7 +314,7 @@ class NASAPowerWeatherDataProvider(WeatherDataProvider):
         msg = "Start parsing of POWER records from URL retrieval."
         self.logger.debug(msg)
 
-        fill_value = float(powerdata["header"]["fillValue"])
+        fill_value = float(powerdata["header"]["fill_value"])
 
         df_power = {}
         for varname in self.power_variables:
