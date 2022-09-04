@@ -12,10 +12,9 @@ from pcse.engine import Engine
 from pcse.fileinput import CABOFileReader
 
 from .const import ACTIONS, OBSERVATIONS
-from .utils import (NASAPowerWeatherDataFetcher, plot_pcse_engine,
-                    send_actions2engine)
+from .utils import NASAPowerWeatherDataFetcher, plot_pcse_engine, send_actions2engine
 
-pcse_data_dir = os.path.join(os.path.dirname(__file__), 'data')
+pcse_data_dir = os.path.join(os.path.dirname(__file__), "data")
 
 
 def get_profit(state, action, done):
@@ -36,8 +35,11 @@ def get_profit(state, action, done):
         price = 0
 
     irrigation_cost = action[9] * 50 / 10  # water price is 50 USD / 1000m3
-    npk_cost = (action[10] * 250 / 1000) + (action[11] * 460 /
-                                            1000) + (action[12] * 370 / 1000)
+    npk_cost = (
+        (action[10] * 250 / 1000)
+        + (action[11] * 460 / 1000)
+        + (action[12] * 370 / 1000)
+    )
     # N = 250 USD/kg, P = 460 USD/kg, K = 370 USD/kg
     cost = irrigation_cost + npk_cost
     return price - cost
@@ -119,15 +121,17 @@ class PcseEnv(gym.Env):
         If simulation ends (365 days).
     """
 
-    metadata = {'render.modes': ['human']}
+    metadata = {"render.modes": ["human"]}
 
-    def __init__(self,
-                 lat=35,
-                 long=128,
-                 crop_name='wheat',
-                 variety_name='winter-wheat',
-                 campaign_start_date='1988-01-01',
-                 emergence_date='1988-01-01'):
+    def __init__(
+        self,
+        lat=35,
+        long=128,
+        crop_name="wheat",
+        variety_name="winter-wheat",
+        campaign_start_date="1988-01-01",
+        emergence_date="1988-01-01",
+    ):
         super().__init__()
         self.lat = lat
         self.long = long
@@ -136,25 +140,35 @@ class PcseEnv(gym.Env):
         self.campaign_start_date = campaign_start_date
         self.emergence_date = emergence_date
         self.end_date = datetime.datetime.strftime(
-            datetime.datetime.strptime(emergence_date, '%Y-%m-%d') +
-            datetime.timedelta(days=365), '%Y-%m-%d')
+            datetime.datetime.strptime(emergence_date, "%Y-%m-%d")
+            + datetime.timedelta(days=365),
+            "%Y-%m-%d",
+        )
 
-        self.observation_space = Box(low = np.array([-1]*11, dtype=np.float32), \
-                                    high = np.array([1]*11, dtype=np.float32))
+        self.observation_space = Box(
+            low=np.array([-1] * 11, dtype=np.float32),
+            high=np.array([1] * 11, dtype=np.float32),
+        )
 
-        self.action_space = Box(low = np.array([-1]*13, dtype=np.float32), \
-                                high = np.array([1]*13, dtype=np.float32))
+        self.action_space = Box(
+            low=np.array([-1] * 13, dtype=np.float32),
+            high=np.array([1] * 13, dtype=np.float32),
+        )
 
-        self.obs_min = np.array([v['min'] for v in OBSERVATIONS.values()],
-                                dtype=np.float32)
-        self.obs_max = np.array([v['max'] for v in OBSERVATIONS.values()],
-                                dtype=np.float32)
-        self.action_min = np.array([v['min'] for v in ACTIONS.values()],
-                                   dtype=np.float32)
-        self.action_max = np.array([v['max'] for v in ACTIONS.values()],
-                                   dtype=np.float32)
+        self.obs_min = np.array(
+            [v["min"] for v in OBSERVATIONS.values()], dtype=np.float32
+        )
+        self.obs_max = np.array(
+            [v["max"] for v in OBSERVATIONS.values()], dtype=np.float32
+        )
+        self.action_min = np.array(
+            [v["min"] for v in ACTIONS.values()], dtype=np.float32
+        )
+        self.action_max = np.array(
+            [v["max"] for v in ACTIONS.values()], dtype=np.float32
+        )
         self.obs_name = list(OBSERVATIONS.keys())
-        self.obs_unit = [v['unit'] for v in OBSERVATIONS.values()]
+        self.obs_unit = [v["unit"] for v in OBSERVATIONS.values()]
 
         self.ref_weather = NASAPowerWeatherDataFetcher(self.lat, self.long)
         self.profit = 0
@@ -162,24 +176,28 @@ class PcseEnv(gym.Env):
         self.done = False
 
     def denorm(self, value, cat):
-        if cat == 'act':
-            denorm_value = (value * (self.action_max - self.action_min) +
-                            self.action_min + self.action_max) / 2
-            denorm_value = np.clip(denorm_value, self.action_min,
-                                   self.action_max)
-        elif cat == 'obs':
-            denorm_value = (value * (self.obs_max - self.obs_min) +
-                            self.obs_min + self.obs_max) / 2
+        if cat == "act":
+            denorm_value = (
+                value * (self.action_max - self.action_min)
+                + self.action_min
+                + self.action_max
+            ) / 2
+            denorm_value = np.clip(denorm_value, self.action_min, self.action_max)
+        elif cat == "obs":
+            denorm_value = (
+                value * (self.obs_max - self.obs_min) + self.obs_min + self.obs_max
+            ) / 2
         return denorm_value
 
     def norm(self, value, cat):
-        if cat == 'act':
+        if cat == "act":
             norm_value = (2 * value - (self.action_max + self.action_min)) / (
-                self.action_max - self.action_min)
-        elif cat == 'obs':
-            norm_value = (2 * value -
-                          (self.obs_max + self.obs_min)) / (self.obs_max -
-                                                            self.obs_min)
+                self.action_max - self.action_min
+            )
+        elif cat == "obs":
+            norm_value = (2 * value - (self.obs_max + self.obs_min)) / (
+                self.obs_max - self.obs_min
+            )
             norm_value = np.clip(norm_value, -1, 1)
         return norm_value
 
@@ -208,41 +226,42 @@ class PcseEnv(gym.Env):
                 events_table:
                 - {start}: {{N_amount : 0, P_amount: 0, K_amount: 0, N_recovery: 0.7, P_recovery: 0.7, K_recovery: 0.7}}
             StateEvents:
-        """.format(cname=self.crop_name,
-                   vname=self.variety_name,
-                   start=self.campaign_start_date,
-                   startdate=self.emergence_date,
-                   end=self.end_date,
-                   maxdur=365)
+        """.format(
+            cname=self.crop_name,
+            vname=self.variety_name,
+            start=self.campaign_start_date,
+            startdate=self.emergence_date,
+            end=self.end_date,
+            maxdur=365,
+        )
 
-        self.crop = CABOFileReader(
-            os.path.join(pcse_data_dir, 'wofost_npk.crop'))
-        self.soil = CABOFileReader(
-            os.path.join(pcse_data_dir, 'wofost_npk.soil'))
-        self.site = CABOFileReader(
-            os.path.join(pcse_data_dir, 'wofost_npk.site'))
-        self.params = ParameterProvider(soildata=self.soil,
-                                        cropdata=self.crop,
-                                        sitedata=self.site)
+        self.crop = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.crop"))
+        self.soil = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.soil"))
+        self.site = CABOFileReader(os.path.join(pcse_data_dir, "wofost_npk.site"))
+        self.params = ParameterProvider(
+            soildata=self.soil, cropdata=self.crop, sitedata=self.site
+        )
 
     def _engine_init(self):
 
         self._module_init()
         self.agro = yaml.safe_load(self.agro_yaml)
-        self.engine = Engine(self.params,
-                             self.weather,
-                             self.agro,
-                             config=os.path.join(pcse_data_dir,
-                                                 'Wofost71_NPK.conf'))
+        self.engine = Engine(
+            self.params,
+            self.weather,
+            self.agro,
+            config=os.path.join(pcse_data_dir, "Wofost71_NPK.conf"),
+        )
         self.current_date = self.engine.day
 
     def get_obs(self, raw_obs, obs_name):
-        obs = np.array([raw_obs[x] for x in obs_name if x in raw_obs.keys()],
-                       dtype=np.float32)
-        obs = self.norm(obs, 'obs')
+        obs = np.array(
+            [raw_obs[x] for x in obs_name if x in raw_obs.keys()], dtype=np.float32
+        )
+        obs = self.norm(obs, "obs")
         return obs
 
-    def reset(self):
+    def reset(self, seed=None):
         self.profit = 0
         self.need_reset = False
         self.done = False
@@ -253,10 +272,10 @@ class PcseEnv(gym.Env):
 
     def step(self, action):
         if (self.need_reset is True) | (self.done is True):
-            logging.error('Needs reset')
+            logging.error("Needs reset")
             return None
 
-        action = self.denorm(action, 'act')
+        action = self.denorm(action, "act")
         send_actions2engine(action, self.engine)
         self.engine.run(days=1)
 
@@ -265,28 +284,29 @@ class PcseEnv(gym.Env):
         else:
             self.current_date = self.engine.day
 
-        next_obs = self.get_obs(self.engine.get_output()[-1],
-                                    self.obs_name)
-        if self.denorm(next_obs, 'obs')[0] >= 2:
+        next_obs = self.get_obs(self.engine.get_output()[-1], self.obs_name)
+        if self.denorm(next_obs, "obs")[0] >= 2:
             self.done = True
 
-        self.profit += get_profit(self.denorm(next_obs, 'obs'), action,
-                                  self.done)
-        reward = get_reward(self.denorm(self.obs, 'obs'),
-                            self.denorm(next_obs, 'obs'), action, self.done)
+        self.profit += get_profit(self.denorm(next_obs, "obs"), action, self.done)
+        reward = get_reward(
+            self.denorm(self.obs, "obs"),
+            self.denorm(next_obs, "obs"),
+            action,
+            self.done,
+        )
         info = {}
 
         self.obs = next_obs
         return next_obs, reward, self.done, info
 
     def render(self, mode="human"):
-        print(f'profit: {self.profit} USD/ha')
+        print(f"profit: {self.profit} USD/ha")
         try:
             fig = plot_pcse_engine(self.engine.get_output())
             return fig
         except AttributeError:
-            logging.error(
-                'Needs reset. You should first initialize environment.')
+            logging.error("Needs reset. You should first initialize environment.")
             return None
 
     def close(self):
